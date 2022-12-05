@@ -1,0 +1,58 @@
+plateau = [["" for i in range(8) ] for i in range(3)]
+print(plateau[0][1])
+blanc = 9
+noir = 9
+phase1 = True
+phase2 = False
+phase3 = False
+joueur = "noir"
+
+def jouer_coup(coord, plateau, joueur):
+    plateau[coord[0]][coord[1]] = joueur
+
+def placement_possible(coord, plateau):
+    if plateau[coord[0]][coord[1]] == "":
+        return True
+    else:
+        return False
+
+while phase1:
+#Changement de joueur
+    if joueur == "noir":
+        joueur = "blanc"
+    else:
+        joueur = "noir"
+#Changement de phase
+    if blanc == 0 or noir == 0:
+        phase1 = False
+        phase2 = True
+        break
+    coup_possible = False
+#Joue un coup
+    while not coup_possible:
+        print("Le joueur", joueur, "doit choisir une case :")
+        carre = int(input())
+        point = int(input())
+        coord = (carre,point)
+        coup_possible = placement_possible(coord, plateau)
+    jouer_coup(coord, plateau, joueur)
+    if joueur == "blanc":
+        blanc -= 1
+    else:
+        noir -= 1
+    print(plateau)
+
+while phase2:
+    print("phase2")
+    if blanc == 3 or noir == 3:
+        phase2 = False
+        phase3 = True
+        break
+
+while phase3:
+    if blanc == 2:
+        print("Le joueur noir a gagné.")
+        break
+    elif noir == 2:
+        print("Le joueur blanc a gagné.")
+        break
