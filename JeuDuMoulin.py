@@ -1,6 +1,12 @@
-plateau = [["" for i in range(8) ] for i in range(3)]
-print(plateau[0][1])
-blanc = 9
+#Plateau à 9 jetons
+t = [["X" for i in range(7)] for i in range(7)]
+for i in range(7):
+    t[i][i], t[i][6-i] = "", ""
+    t[3][i], t[i][3] = "", ""
+t[3][3] = "X"
+plateau = t
+
+blanc = 9 #compteurs de pions dans la main du joueur
 noir = 9
 phase1 = True
 phase2 = False
@@ -9,52 +15,89 @@ joueur = "noir"
 
 
 def change_joueur(joueur):
+    '''
+    Change le joueur
+    '''
     if joueur == "noir":
-        joueur = "blanc"
+        return "blanc"
     else:
-        joueur = "noir"
+        return "noir"
 
 
-def jouer_coup(coord, plateau, joueur):
+def jouer_coup(plateau, coord, joueur):
     plateau[coord[0]][coord[1]] = joueur
 
 
-def places_libres(plateau, joueur):
+def cases_libres(plateau, joueur):
+    '''
+    Renvoie la liste des places libres
+    '''
     places_libres = []
     for i in range(len(plateau)-1):
         for j in range(len(plateau[i])-1):
-            if jouer_coup((i,j), plateau, joueur) == True:
+            if est_libre((i,j), plateau, joueur) == True:
                 places_libres.append((i,j))
     return places_libres
 
 
-def est_libre(coord, plateau):
+def est_libre(plateau, coord):
+    '''
+    Vérifie si la case est libre ou non
+    '''
     if plateau[coord[0]][coord[1]] == "":
         return True
     else:
         return False
 
 
-def deplacement_possible(coord, pleteau, joueur):
-    
-
-
+def deplacement_possible(plateau, pion, case):
+    '''
+    Fonction qui renvoie si le déplacement est réalisable ou pas
+    '''
+    if pion == case:
+        return False
+    elif not pion[0] == case[0] and not pion[1] == case[1]:
+        return False
+    elif pion[0] == case[0]:
+        i = pion[0]
+        if pion[0] < case[0]:
+            for j in range(pion[1], case[1]):
+                if plateau[i][j] == "":
+                   return False
+        else:
+            for j in range(case[1], pion[1]):
+               if plateau[i][j] == "":
+                   return False
+    elif pion[1] == case[1]:
+        j = pion[1]
+        if pion[1] < case[1]:
+            for i in range(pion[0], case[0]):
+                if plateau[i][j] == "":
+                   return False
+        else:
+            for j in range(case[0], pion[0]):
+               if plateau[i][j] == "":
+                   return False
+    return True
+        
 while phase1:
 #Décide de quel joueur joue
-    change_joueur(joueur)
+    joueur = change_joueur(joueur)
+    print(joueur)
 #Le joueur joue un coup
-    place_libre = False
-    while not place_libre:
+    case_libre = False
+    while not case_libre:
         print("Le joueur", joueur, "doit choisir une case :")
-        carre = int(input())
-        point = int(input())
-        coord = (carre,point)
-        place_libre = est_libre(coord, plateau)
-    jouer_coup(coord, plateau, joueur)
+        x = int(input())
+        y = int(input())
+        coord = (x, y)
+        case_libre = est_libre(plateau, coord)
+    jouer_coup(plateau, coord, joueur)
     if joueur == "blanc":
         blanc -= 1
     else:
         noir -= 1
+        
 #Changement de phase
     if blanc == 0 or noir == 0:
         phase1 = False
@@ -73,14 +116,16 @@ while phase2:
         phase3 = True
         break
 #Le joueur joue un coup
-    coup_possible = False:
+    coup_possible = False
     while not coup_possible:
         print("Le joueur", joueur, "doit choisir une case :")
-        carre = int(input())
-        point = int(input())
-        coord = (carre, point)
-        coup_possible = deplacement_possible(coord, plateau)
-    jouer_coup(coord, plateau, joueur)
+        x = int(input())
+        y = int(input())
+        coord = (x, y)
+        coup_possible = deplacement_possible(plateau, coord)
+    jouer_coup(plateau, coord, joueur)
+    for i in range (len(plateau)):
+        print(plateau(i))
 
 
 while phase3:
