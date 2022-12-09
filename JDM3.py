@@ -107,9 +107,10 @@ def parcours_largeur(plateau, coord):
         if plateau[x][j] != "X":
             liste.append((x,j))
     liste.append(coord)
-    for i in range(y, len(plateau[x])):
+    for j in range(y, len(plateau[x])):
         if plateau[x][j]:
             liste.append((x,j))
+    print("largeur", liste)
     return liste
 
 
@@ -124,6 +125,7 @@ def parcours_hauteur(plateau, coord):
     for i in range(x, len(plateau[y])):
         if plateau[i][y] != "X":
             liste.append((i, y))
+    print("hauteur", liste)
     return liste
 
 
