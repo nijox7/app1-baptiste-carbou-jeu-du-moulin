@@ -1,1 +1,12 @@
-test
+def parcours_hauteur(plateau, coord):
+    '''Renvoie les coordonnées des cases en hauteur'''
+    liste = []
+    x, y = coord[0], coord[1]
+    for i in range(x, -1, -1):
+         if plateau[x][j] != "X":
+             liste.append((x,j))
+    liste.append(coord)
+    for j in range(x, len(plateau[y])):
+        if plateau[x][j]:
+            liste.append((x,y))
+    return liste
