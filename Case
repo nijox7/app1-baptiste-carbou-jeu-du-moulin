@@ -1,0 +1,58 @@
+class Case:
+    def __init__(self, x, y, contenu):
+        self.x = x
+        self.y = y
+        self.contenu = contenu
+        self.moulin = False
+
+
+    def voisines(self):
+        '''
+        Renvoie la liste des coordonnées des cases adjacentes rectilignes
+        '''
+        liste = []
+        x, y = self.x, self.y
+        #Parcours latéral
+        for j in range(y-1, -1, -1):
+            if plateau[x][j] != "X":
+                liste.append((x,j))
+                break
+        for j in range(y+1, len(plateau[x])-1):
+            if plateau[x][j] == "X":
+                liste.append((x,j))
+                break
+        #Parcours en hauteur
+        for i in range(x-1, -1, -1):
+            if plateau[i][y] != "X":
+                liste.append((i,y))
+                break
+        for i in range(x+1, len(plateau)-1):
+            if plateau[i][y] != "X":
+                liste.append((i,y))
+                break
+
+        return liste
+
+    def place(player):
+        self.contenu = player
+
+    def retire():
+        if self.moulin == False:
+            self.contenu = ""
+
+
+def cree_plateau_9j():
+    '''
+    Renvoie un plateau vide de la variante à 9 jetons
+    '''
+    t = [["X" for i in range(7)] for i in range(7)]
+    for i in range(7):
+        t[i][i], t[i][6-i] = Case(i, i), Case(i, 6-i)
+        t[3][i], t[i][3] = Case(3, i), Case(i, 3)
+    t[3][3] = "Centre"
+    return t
+
+
+plateau = [[Case(i,j,i) for j in range(3)] for i in range(3)]
+
+print(plateau[0][0].voisines())
