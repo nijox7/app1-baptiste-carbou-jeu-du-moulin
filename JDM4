@@ -1,40 +1,40 @@
 class Case:
 
-    def __init__(self, x, y, contenu):
+    def __init__(self, x, y, couleur):
         self.x = x
         self.y = y
-        self.contenu = contenu
+        self.couleur = couleur
         self.moulin = False
 
     def voisines(self):
         '''
-        Renvoie la liste des coordonnées des cases adjacentes rectilignes
+        Renvoie la liste des cases adjacentes rectilignes
         '''
         liste = []
         x, y = self.x, self.y
         #Parcours latéral
         for j in range(y-1, -1, -1):
-            if plateau[x][j].contenu != "X":
+            if plateau[x][j].couleur != "X":
                 liste.append((plateau[x][j]))
                 break
         for j in range(y + 1, len(plateau[x])):
-            if plateau[x][j].contenu != "X":
+            if plateau[x][j].couleur != "X":
                 liste.append(plateau[x][j])
                 break
         #Parcours en hauteur
         for i in range(x - 1, -1, -1):
-            if plateau[i][y].contenu != "X":
+            if plateau[i][y].couleur != "X":
                 liste.append(plateau[i][y])
                 break
         for i in range(x + 1, len(plateau)):
-            if plateau[i][y].contenu != "X":
+            if plateau[i][y].couleur != "X":
                 liste.append(plateau[i][y])
                 break
 
         return liste
 
 
-def cree_plateau_9j():
+def cree_plateau():
     '''
     Renvoie un plateau vide de la variante à 9 jetons
     '''
@@ -48,12 +48,12 @@ def cree_plateau_9j():
 
 def place(case, joueur):
     ''' Place un pion sur la case demandée '''
-    case.contenu = joueur
+    case.couleur = joueur
 
 
 def retire(case):
     ''' Retire un pion '''
-    case.contenu = ""
+    case.couleur = ""
 
 
 def deplace(case1, case2, joueur):
@@ -66,10 +66,10 @@ def change_joueur(joueur):
     '''
     Change le joueur
     '''
-    if joueur == "noir":
-        return "blanc"
+    if joueur == "black":
+        return "white"
     else:
-        return "noir"
+        return "black"
 
 
 def cases_libres(plateau):
@@ -86,7 +86,7 @@ def cases_libres(plateau):
 def est_libre(case):
     ''' Vérifie que la case est libre '''
 
-    if case.contenu == "":
+    if case.couleur == "":
         return True
     else:
         return False
@@ -116,7 +116,7 @@ def occurrence(liste):
             return True
 
 
-def moulin(case, joueur):
+def donne_moulin(case, joueur):
     '''
     Renvoie si la case est au centre d'un moulin,
     la liste des cases intégrées au moulin.
@@ -124,20 +124,20 @@ def moulin(case, joueur):
     renvoie les cases de tous les moulins.
     Si la case n'est pas au centre d'un moulin, renvoie None
     '''
+    
+    liste = []
     lx = []
     ly = []
     for voisine in case.voisines():
-        if voisine.contenu == joueur:
+        if voisine.couleur == joueur:
             lx.append(voisine.x)
             ly.append(voisine.y)
     occ_x, occ_y = occurrence(lx), occurrence(ly)
-    if occ_x and occ_y:
-        return plateau[case.x][case.y -1], case, plateau[case.x][case.y + 1], plateau[case.x - 1][case.y], case, plateau[case.x + 1][case.y]
-    
     if occ_x:
-        return plateau[case.x][case.y -1], case, plateau[case.x][case.y + 1]
-    elif occ_y:
-        return plateau[case.x - 1][case.y], case, plateau[case.x + 1][case.y]
+        liste.append(plateau[case.x][case.y -1], case, plateau[case.x][case.y + 1])
+    if occ_y:
+        liste.append(plateau[case.x - 1][case.y], case, plateau[case.x + 1][case.y])
+    return liste
 
 
 def forme_moulin(moulin):
@@ -153,7 +153,6 @@ def suppr_moulin(moulin):
 
 
 def peut_retirer(case):
-    case = plateau[coord[0]][coord[1]]
     if case.moulin == False:
         return True
     return False
@@ -162,7 +161,7 @@ def peut_retirer(case):
 ## INITIALISATION ##
 
 #Créer le plateau
-plateau = cree_plateau_9j()
+plateau = cree_plateau()
 #Compteurs de jetons
 blanc = 9 
 noir = 9
@@ -171,13 +170,13 @@ phase1 = True
 phase2 = False
 phase3 = False
 #Désigne le joueur qui joue en premier
-joueur = "noir"
+joueur = "black"
 
 
 ## LANCEMENT DU JEU ##
 running = True
 while running:
-    
+
     #PHASE DE PLACEMENT
     if phase1 == True:
         while True:
@@ -199,7 +198,7 @@ while running:
             print("Le joueur", joueur, "doit choisir un pion à déplacer :")
             x, y = int(input()), int(input())
             pion = plateau[x][y]
-            if pion == joueur:
+            if pion.couleur == joueur:
                 break
         #Case visée par le joueur
         while True:
@@ -212,16 +211,17 @@ while running:
         
 
     #FORMATION DE MOULIN
-    moulin = moulin(case, joueur)
+    moulin = donne_moulin(case, joueur)
     if moulin != None:
         forme_moulin(moulin)
     else:
-        for voisine in case.voisines:
-            moulin = moulin(voisine, joueur)
-            if moulin != None:
+        #print(case.voisines[0])
+        for voisine in case.voisines():
+            moulin = donne_moulin(voisine, joueur)
+            if moulin != []:
                 forme_moulin(moulin)
                 break
-    if moulin != None:
+    if moulin != []:
         while True:
             print("Choisissez un pion à retirer :")
             x, y = int(input()), int(input())
