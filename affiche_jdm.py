@@ -52,7 +52,7 @@ def efface_pion(plateau, case):
 
 def distance (x, y):
     ''' Calcul la distance de la souris au point '''
-    return (abs(abscisse_souris() - x) ** 2 + abs(ordonnee_souris() - y) ** 2) ** (1/2)
+    return (abs(ordonnee_souris() - x) ** 2 + abs(abscisse_souris() - y) ** 2) ** (1/2)
 
 
 def donne_case(plateau):
@@ -64,5 +64,10 @@ def donne_case(plateau):
             if distance(x, y) <= moyenne * 0.02:
                 return plateau[i][j]
 
-affiche_liste_case(plateau, case):
+
+def affiche_liste_case(plateau, liste):
     ''' Affiche une liste de case '''
+    for case in liste:
+        cercle(largeur/2 - a + case.x * (a/3), hauteur/2 - a + case.y * (a/3),
+               moyenne * 0.02, couleur="red", tag="case_possible")
+
