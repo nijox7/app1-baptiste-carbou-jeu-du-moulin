@@ -59,8 +59,8 @@ def donne_case(plateau):
     ''' Renvoie la case sur laquelle se trouve la souris, sinon None '''
     for i in range(7):
         for j in range(7):
-            x = largeur - a + i * (a/3)
-            y = hauteur - a + j * (a/3)
+            x = largeur/2 - a + i * (a/3)
+            y = hauteur/2 - a + j * (a/3)
             if distance(x, y) <= moyenne * 0.02:
                 return plateau[i][j]
 
