@@ -5,48 +5,49 @@ plateau = cree_plateau()
 cree_fenetre(hauteur, largeur)
 dessine_plateau()
 joueur = "black"
-noir, blanc = 9, 9
+compteur = {"black": 9, "white": 9}
 running, phase1 = True, True
-phase2 = False
+phase2, deplacement = False, False
 
-while True:
-    if phase1:
-        while True:
-            ev = attend_ev()
-            tev = type_ev(ev) 
+while True: 
+    ev = attend_ev()
+    tev = type_ev(ev)
 
-            if tev == "Quitte":
-                ferme_fenetre()
-                running = False
-                break
-            elif tev == "ClicGauche":
-                case = donne_case(plateau)
-                if case and est_libre(case):
-                    place_pion(case, joueur)
-                    dessine_pion(plateau, case)
-                    if joueur == "black":
-                        noir -= 1
-                    else:
-                        blanc -= 1
+    if tev == "Quitte":
+        running = False
+        break 
 
-    elif phase2:
-        while True:
-            ev = attend_ev()
-            tev = type_ev(ev)
-            if tev == "Quitte":
-                ferme_fenetre()
-                running = False
-                break
-            elif tev == "ClicGauche":
-                case = donne_case(plateau)
-                if case and 
+    elif phase1 and tev == "ClicGauche":
+        case = donne_case(plateau) #renvoie la case sur laquelle se trouve la souris
+        if case and est_libre(case):
+            place(case, joueur)
+            dessine_pion(plateau, case)
+            compteur[joueur] -= 1
+            joueur = change_joueur(joueur)
+
+    elif deplacement == True and tev == "ClicGauche":
+        case_visee = donne_case(plateau)
+        if case_visee and case_visee in case_select.voisines(plateau):
+            deplace(case_select, case_visee, joueur)
+            efface_pion(plateau, case_select)
+            dessine_pion(plateau, case_visee)
+            efface("case_possible")
+            deplacement = False
+            joueur = change_joueur(joueur)
         
+    elif phase2 and tev == "ClicGauche":
+        case_select = donne_case(plateau)
+        if case_select and case_select.couleur == joueur:
+            deplacement = True
+            affiche_liste_case(plateau, case_select.voisines(plateau))
 
     #CHANGEMENT DE PHASE
-    if phase1 and noir == 0 and blanc == 0:
+    if phase1 and compteur["black"] == 0 and compteur["white"] == 0:
         phase1 = False
-        phase2 = False
-
-    joueur = change_joueur(joueur)
+        phase2 = True
+    elif phase2 and (compteur["black"] == 7 or compteur["white"] == 7):
+        print("Le joueur", joueur, " a gagné!!")
+        break
     mise_a_jour()
 
+ferme_fenetre()
