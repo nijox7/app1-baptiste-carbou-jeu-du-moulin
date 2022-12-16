@@ -6,10 +6,8 @@ class Case:
         self.couleur = couleur
         self.moulin = False
 
-    def voisines(self):
-        '''
-        Renvoie la liste des cases adjacentes rectilignes
-        '''
+    def voisines(self, plateau):
+        ''' Renvoie la liste des cases adjacentes rectilignes '''
         liste = []
         x, y = self.x, self.y
         #Parcours latéral
@@ -35,9 +33,7 @@ class Case:
 
 
 def cree_plateau():
-    '''
-    Renvoie un plateau vide de la variante à 9 jetons
-    '''
+    ''' Renvoie un plateau vide de la variante à 9 jetons '''
     t = [[Case(i, j, "X") for j in range(7)] for i in range(7)]
     for i in range(7):
         t[i][i], t[i][6-i] = Case(i, i, ""), Case(i, 6-i, "")
@@ -63,9 +59,7 @@ def deplace(case1, case2, joueur):
 
 
 def change_joueur(joueur):
-    '''
-    Change le joueur
-    '''
+    ''' Change le joueur '''
     if joueur == "black":
         return "white"
     else:
@@ -156,4 +150,3 @@ def peut_retirer(case):
     if case.moulin == False:
         return True
     return False
-
