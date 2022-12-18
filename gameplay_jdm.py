@@ -1,12 +1,26 @@
 class Case:
-
+    ''' Définit une case d'un plateau'''
     def __init__(self, x, y, couleur):
         self.x = x
         self.y = y
         self.couleur = couleur
         self.moulin = False
 
-    def voisines(self, plateau):
+    def est_vide(self):
+        ''' Renvoie si la case est vide'''
+        if self.couleur == "":
+            return True
+        return False
+
+    def place(self, joueur):
+        '''Place un pion sur la case'''
+        self.couleur = joueur
+
+    def retire(self):
+        '''Retire un pion de la case'''
+        self.couleur = ""
+
+    def voisines(self):
         ''' Renvoie la liste des cases adjacentes rectilignes '''
         liste = []
         x, y = self.x, self.y
@@ -28,9 +42,7 @@ class Case:
             if plateau[i][y].couleur != "X":
                 liste.append(plateau[i][y])
                 break
-
         return liste
-
 
 def cree_plateau():
     ''' Renvoie un plateau vide de la variante à 9 jetons '''
@@ -42,20 +54,11 @@ def cree_plateau():
     return t
 
 
-def place(case, joueur):
-    ''' Place un pion sur la case demandée '''
-    case.couleur = joueur
 
-
-def retire(case):
-    ''' Retire un pion '''
-    case.couleur = ""
-
-
-def deplace(case1, case2, joueur):
+def deplace(dep, dest, joueur):
     ''' Déplace un pion '''
-    retire(case1)
-    place(case2, joueur)
+    dep.retire()
+    dest.place(joueur)
 
 
 def change_joueur(joueur):
@@ -64,17 +67,6 @@ def change_joueur(joueur):
         return "white"
     else:
         return "black"
-
-
-def cases_libres(plateau):
-    ''' Renvoie la liste des cases libres d'un plateau '''
-    cases_libres = []
-
-    for i in range(len(plateau)-1):
-        for j in range(len(plateau[i])-1):
-            if est_libre(plateau, (i,j)) == True:
-                cases_libres.append(plateau[i][j])
-    return cases_libres
 
 
 def est_libre(case):
@@ -86,13 +78,46 @@ def est_libre(case):
         return False
 
 
-def deplacement_possible(case1, case2):
+def cases_libres(plateau):
+    ''' Renvoie la liste des cases libres d'un plateau '''
+    cases_libres = []
+
+    for i in range(len(plateau)-1):
+        for j in range(len(plateau[i])-1):
+            if plateau[i][j].est_vide() == True:
+                cases_libres.append(plateau[i][j])
+    return cases_libres
+
+
+def donne_voisines(plateau, x, y):
+        ''' Renvoie la liste des cases adjacentes rectilignes '''
+        liste = []
+        #Parcours latéral
+        for j in range(y-1, -1, -1):
+            if plateau[x][j].couleur != "X":
+                liste.append((plateau[x][j]))
+                break
+        for j in range(y + 1, len(plateau[x])):
+            if plateau[x][j].couleur != "X":
+                liste.append(plateau[x][j])
+                break
+        #Parcours en hauteur
+        for i in range(x - 1, -1, -1):
+            if plateau[i][y].couleur != "X":
+                liste.append(plateau[i][y])
+                break
+        for i in range(x + 1, len(plateau)):
+            if plateau[i][y].couleur != "X":
+                liste.append(plateau[i][y])
+                break
+        return liste
+
+
+def peut_deplacer(dep, dest):
     ''' Vérifie que le déplacement voulu soit possible '''
-    if case2 != "":
-        return False
-    elif case2 not in case1.voisines():
-        return False
-    return True
+    if dest.couleur == "" and dest in dep.voisines():
+        return True
+    return False
 
 
 def occurence_e(liste, element):
@@ -100,14 +125,14 @@ def occurence_e(liste, element):
     for e in liste:
         if e == element:
             compteur += 1
-    if compteur > 1:
-        return True
+    return compteur > 1
 
 
 def occurrence(liste):
     for element in liste:
         if occurence_e(liste, element):
             return True
+    return False
 
 
 def donne_moulin(case, joueur):
@@ -122,7 +147,7 @@ def donne_moulin(case, joueur):
     liste = []
     lx = []
     ly = []
-    for voisine in case.voisines():
+    for voisine in voisines[str(case.x)+str(case.y)]:
         if voisine.couleur == joueur:
             lx.append(voisine.x)
             ly.append(voisine.y)
@@ -150,3 +175,20 @@ def peut_retirer(case):
     if case.moulin == False:
         return True
     return False
+
+
+### INITIALISATION DU MODELE ###
+
+#Création du plateau
+plateau = cree_plateau()
+#Définition des voisines de chaque case
+voisines = {"00":[], "03":[], "06":[], "10":[], "11":[],
+            "13":[], "15":[], "22":[], "23":[], "24":[],
+            "30":[], "31":[], "32":[], "34":[], "35":[],
+            "36":[], "42":[], "43":[], "44":[], "51":[],
+            "53":[], "55":[], "60":[], "63":[], "66":[], }
+for i in range(7):
+    for j in range(7):
+        voisines[str(i)+str(j)] = donne_voisines(plateau, i, j)
+#Définit le nombre de jetons
+nb_jetons = 3
