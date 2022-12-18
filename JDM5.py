@@ -1,13 +1,14 @@
 from affiche_jdm import*
 from gameplay_jdm import*
 
-plateau = cree_plateau()
-cree_fenetre(hauteur, largeur)
+cree_fenetre(largeur, hauteur)
 dessine_plateau()
 joueur = "black"
-compteur = {"black": 9, "white": 9}
-running, phase1 = True, True
-phase2, deplacement = False, False
+compteur = {"black": nb_jetons, "white": nb_jetons}
+running = True
+phase1 = True
+phase2 = False
+deplacement = False
 
 while True: 
     ev = attend_ev()
@@ -17,37 +18,42 @@ while True:
         running = False
         break 
 
-    elif phase1 and tev == "ClicGauche":
-        case = donne_case(plateau) #renvoie la case sur laquelle se trouve la souris
-        if case and est_libre(case):
-            place(case, joueur)
-            dessine_pion(plateau, case)
-            compteur[joueur] -= 1
-            joueur = change_joueur(joueur)
+    if tev == "ClicGauche":
+        if phase1:
+            case = donne_case(plateau) #renvoie la case sur laquelle se trouve la souris
+            if case and case.est_vide():
+                case.place(joueur)
+                dessine_pion(case)
+                compteur[joueur] -= 1
+                joueur = change_joueur(joueur)
+            if phase1 and compteur["black"] == 0 and compteur["white"] == 0:
+                phase1 = False
+                phase2 = True
 
-    elif deplacement == True and tev == "ClicGauche":
-        case_visee = donne_case(plateau)
-        if case_visee and case_visee in case_select.voisines(plateau):
-            deplace(case_select, case_visee, joueur)
-            efface_pion(plateau, case_select)
-            dessine_pion(plateau, case_visee)
+        elif deplacement:
+            #Le joueur sélectionne sa destination
+            dest = donne_case(plateau)
+            if dest and peut_deplacer(depart, dest):
+                deplace(depart, dest, joueur)
+                efface_pion(depart)
+                efface("case_possible")
+                dessine_pion(dest)
+                deplacement = False
+                joueur = change_joueur(joueur)
+            else:
+                deplacement = False
             efface("case_possible")
-            deplacement = False
-            joueur = change_joueur(joueur)
-        
-    elif phase2 and tev == "ClicGauche":
-        case_select = donne_case(plateau)
-        if case_select and case_select.couleur == joueur:
-            deplacement = True
-            affiche_liste_case(plateau, case_select.voisines(plateau))
+            #Met fin au jeu si un des joueur gagne
+            if phase2 and (compteur["black"] == 7 or compteur["white"] == 7): 
+                running = False
+                break 
 
-    #CHANGEMENT DE PHASE
-    if phase1 and compteur["black"] == 0 and compteur["white"] == 0:
-        phase1 = False
-        phase2 = True
-    elif phase2 and (compteur["black"] == 7 or compteur["white"] == 7):
-        print("Le joueur", joueur, " a gagné!!")
-        break
-    mise_a_jour()
+        elif phase2:
+            #Le joueur sélectionne le pion qu'il veut jouer
+            depart = donne_case(plateau)
+            if depart and depart.couleur == joueur:
+                deplacement = True
+                dessine_liste_cases(depart.voisines())
+
 
 ferme_fenetre()
