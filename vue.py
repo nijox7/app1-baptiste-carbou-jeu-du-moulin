@@ -1,12 +1,11 @@
 from fltk import*
-from modele import*
 
-largeur, hauteur = 1000, 700
+largeur, hauteur = 1700, 1000
 moyenne = (largeur + hauteur) / 1.75 #Moyenne qui permet d'ajuster la taille du quadrillage
 a = 0.25 * moyenne #Distance du centre au bord de la grille
 
 
-def dessine_plateau():
+def dessine_plateau_9j():
     ''' Dessine un plateau pour 9 jetons '''
 
     rectangle(largeur/2 - a, hauteur/2 - a,
@@ -44,7 +43,7 @@ def distance (x, y):
     return (abs(ordonnee_souris() - x) ** 2 + abs(abscisse_souris() - y) ** 2) ** (1/2)
 
 
-def donne_case():
+def donne_case(plateau):
     ''' Renvoie la case sur laquelle se trouve la souris, sinon None '''
     for i in range(7):
         for j in range(7):
@@ -73,7 +72,7 @@ def efface_moulin(case):
     efface("moulin" + str(case.x) + str(case.y))
 
 
-def affiche_case():
+def affiche_case(plateau):
     ''' Affiche les cases du plateau '''
     for i in range(len(plateau)):
         for j in range(len(plateau)):
