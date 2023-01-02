@@ -49,12 +49,12 @@ def deplace(dep, dest, joueur):
     dest.place(joueur)
 
 
-def joueur_adv(joueur):
+def joueur_adv(joueur, j1, j2):
     ''' Renvoie le joueur adverse '''
-    if joueur == "black":
-        return "white"
+    if joueur == j1:
+        return j2
     else:
-        return "black"
+        return j1
 
 
 def peut_deplacer(dep, dest):
@@ -64,13 +64,13 @@ def peut_deplacer(dep, dest):
     return False
 
 
-def cases_vides():
+def cases_vides(plateau):
     ''' Renvoie toutes les cases libre du plateau '''
     cases_vides = []
-    for i in range(len(plateau)-1):
-        for j in range(len(plateau[i])-1):
-            if plateau[i][j].est_vide() == True:
-                cases_vides.append(plateau[i][j])
+    for ligne in plateau:
+        for case in ligne:
+            if case.est_vide() == True:
+                cases_vides.append(case)
     return cases_vides
 
 
@@ -166,6 +166,7 @@ def col_aligne(plateau, x, y):
             break
     return liste
 
+
 def diag_aligne(plateau, x, y):
     ''' Renvoie l'alignement des diagonales '''
     liste1 = []
@@ -217,22 +218,3 @@ def detect_moulin(case):
         if moulin == True and alignement != []:
             liste.append(alignement)
     return liste
-
-
-### INITIALISATION DU MODELE ###
-
-#Définit le nombre de jetons
-nb_jetons = 9
-
-#Création du plateau
-plateau = cree_plateau()
-
-#Définition des voisines et des alignements possibles de chaque case
-for i in range (7):
-    for j in range(7):
-        case = plateau[i][j]
-        if case.couleur == "":
-            case.voisines = vois_hor(plateau, i, j) + vois_vert(plateau, i, j)
-            case.alignements[0] = ligne_aligne(plateau, i, j)
-            case.alignements[1] = col_aligne(plateau, i, j)
-            case.alignements[2], case.alignements[3] = diag_aligne(plateau, i, j)
