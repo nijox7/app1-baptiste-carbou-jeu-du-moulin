@@ -237,3 +237,4 @@ def detect_moulin(case):
             liste.append(alignement)
     return liste
 
+
