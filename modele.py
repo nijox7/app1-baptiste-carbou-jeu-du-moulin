@@ -24,7 +24,7 @@ class Case:
         self.moulin = False
 
 
-def cree_plateau():
+def cree_plateau_9j():
     ''' Renvoie un plateau vide de la variante à 9 jetons '''
     t = [[Case(i, j, "X") for j in range(7)] for i in range(7)]
     for i in range(7):
@@ -33,6 +33,24 @@ def cree_plateau():
         t[3][i] = Case(3, i, "")
         t[i][3] = Case(i, 3, "")
     t[3][3] = Case(3, 3, "Centre")
+    return t
+
+
+def cree_plateau_6j():
+    ''' Renvoie un plateau de variante à 6 jetons '''
+    t = [[Case(i, j, "X") for j in range(5)] for i in range(5)]
+    for i in range(5):
+        t[i][i] = Case(i, i, "")
+        t[i][4-i] = Case(i, 4-i, "")
+        t[2][i] = Case(2, i, "")
+        t[i][2] = Case(i, 2, "")
+    t[2][2] = Case(2, 2, "Centre")
+    return t
+
+
+def cree_plateau_3j():
+    ''' Renvoie un plateau de variante à 3 jetons'''
+    t = [[Case(i, j, "") for j in range(3)] for i in range(3)]
     return t
 
 
@@ -218,3 +236,4 @@ def detect_moulin(case):
         if moulin == True and alignement != []:
             liste.append(alignement)
     return liste
+
