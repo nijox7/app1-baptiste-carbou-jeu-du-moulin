@@ -92,6 +92,16 @@ def cases_vides(plateau):
     return cases_vides
 
 
+def cases_couleur(plateau, joueur):
+    ''' Renvoie toutes les cases libre du plateau '''
+    c_couleur = []
+    for ligne in plateau:
+        for case in ligne:
+            if case.couleur == joueur:
+                c_couleur.append(case)
+    return c_couleur
+
+
 def vois_vert(plateau, x, y):
     ''' Renvoie la liste des cases voisines verticales '''
     liste = []
@@ -238,3 +248,9 @@ def detect_moulin(case):
     return liste
 
 
+def retire_impossible(plateau, joueur):
+    c_couleur = cases_couleur(plateau, joueur)
+    for case in c_couleur:
+        if case.moulin == False:
+            return False
+    return True
