@@ -233,7 +233,7 @@ def diag_aligne(plateau, x, y):
 
 
 def detect_moulin(case):
-    ''' Détecte et renvoie la liste des alignements '''
+    ''' Détecte et renvoie la liste des cases alignées par moulin '''
     liste = []
     #Parcours tous les alignements possibles à la case
     for alignement in case.alignements:
@@ -249,8 +249,10 @@ def detect_moulin(case):
 
 
 def retire_impossible(plateau, joueur):
+    ''' Renvoie si il n'existe aucun pion possible à retirer '''
     c_couleur = cases_couleur(plateau, joueur)
     for case in c_couleur:
         if case.moulin == False:
             return False
     return True
+
