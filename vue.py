@@ -1,9 +1,8 @@
 from fltk import*
 
 largeur, hauteur = 1700, 1000
-moyenne = (largeur + hauteur) / 2 #Moyenne qui permet d'ajuster la taille du quadrillage
+moyenne = (largeur + hauteur) / 1.75 #Moyenne qui permet d'ajuster la taille du quadrillage
 a = 0.25 * moyenne #Distance du centre au bord de la grille
-coeff = 1
 
 def dessine_plateau_9j():
     ''' Dessine un plateau pour 9 jetons '''
